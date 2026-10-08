@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow — User Guide</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.75;
+      color: #1a1a2e;
+      background: #f4f6fb;
+    }
+
+    /* ── Layout ── */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 230px;
+      min-width: 200px;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      padding: 32px 0 40px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo {
+      padding: 0 24px 28px;
+      border-bottom: 1px solid #3a3f5c;
+    }
+    .sidebar-logo h1 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #89b4fa;
+      letter-spacing: -0.5px;
+    }
+    .sidebar-logo p {
+      font-size: 11px;
+      color: #6e738d;
+      margin-top: 2px;
+    }
+
+    .sidebar nav {
+      padding: 20px 0 0;
+    }
+    .nav-section {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #585b7a;
+      padding: 14px 24px 4px;
+    }
+    .sidebar nav a {
+      display: block;
+      padding: 6px 24px;
+      color: #a6adc8;
+      text-decoration: none;
+      font-size: 13px;
+      border-left: 3px solid transparent;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .sidebar nav a:hover {
+      color: #cdd6f4;
+      background: #2a2d40;
+      border-left-color: #89b4fa;
+    }
+
+    /* ── Main content ── */
+    .content {
+      flex: 1;
+      padding: 48px 56px 80px;
+      min-width: 0;
+    }
+
+    section {
+      margin-bottom: 56px;
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e8eaf2;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    h2 .icon {
+      font-size: 20px;
+    }
+
+    h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #2d3a5e;
+      margin: 24px 0 10px;
+    }
+
+    p { margin-bottom: 12px; color: #3a3f5c; }
+
+    /* ── Hero / intro card ── */
+    .hero {
+      background: linear-gradient(135deg, #1e1e2e 0%, #2a2d50 100%);
+      color: #cdd6f4;
+      border-radius: 12px;
+      padding: 32px 36px;
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .hero-text h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #89b4fa;
+      margin-bottom: 6px;
+    }
+    .hero-text p {
+      color: #a6adc8;
+      font-size: 14px;
+      margin: 0;
+    }
+    .hero-badge {
+      background: #313244;
+      border: 1px solid #45475a;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 12px;
+      color: #a6adc8;
+      flex-shrink: 0;
+      text-align: center;
+    }
+    .hero-badge strong {
+      display: block;
+      font-size: 18px;
+      color: #cba6f7;
+      margin-bottom: 2px;
+    }
+
+    /* ── Info cards (quick start) ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e0e4f0;
+      border-radius: 10px;
+      padding: 18px 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .card .card-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .card h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 4px;
+    }
+    .card p {
+      font-size: 12px;
+      color: #6e738d;
+      margin: 0;
+    }
+
+    /* ── Priority badges ── */
+    .pri {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 20px;
+    }
+    .pri-high   { background: #ffd6d6; color: #8b0000; }
+    .pri-medium { background: #fff5cc; color: #7a5c00; }
+    .pri-low    { background: #d6f5d6; color: #1a5c1a; }
+
+    /* ── Feature rows ── */
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 16px;
+    }
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 14px;
+      margin-bottom: 6px;
+      background: #fff;
+      border: 1px solid #e8eaf2;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #2d3a5e;
+    }
+    .feature-list li .fi {
+      font-size: 17px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .feature-list li strong { color: #1a1a2e; }
+
+    /* ── Keyboard shortcut table ── */
+    .kbd-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: #fff;
+      border: 1px solid #e0e4f0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .kbd-table th {
+      background: #f0f2fb;
+      color: #2d3a5e;
+      font-weight: 700;
+      padding: 9px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e0e4f0;
+    }
+    .kbd-table td {
+      padding: 8px 16px;
+      border-bottom: 1px solid #f0f2fb;
+      color: #3a3f5c;
+      vertical-align: middle;
+    }
+    .kbd-table tr:last-child td { border-bottom: none; }
+    .kbd-table tr:hover td { background: #f7f8fd; }
+
+    kbd {
+      display: inline-block;
+      background: #f0f2fb;
+      border: 1px solid #c8cce8;
+      border-radius: 4px;
+      padding: 1px 7px;
+      font-family: "Cascadia Code", "Fira Code", monospace;
+      font-size: 12px;
+      color: #2d3a5e;
+      box-shadow: 0 1px 0 #c8cce8;
+    }
+
+    /* ── Step list ── */
+    .steps {
+      list-style: none;
+      padding: 0;
+      counter-reset: step-counter;
+    }
+    .steps li {
+      counter-increment: step-counter;
+      display: flex;
+      gap: 14px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+    }
+    .steps li::before {
+      content: counter(step-counter);
+      min-width: 28px;
+      height: 28px;
+      background: #2d6a9f;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .steps li p { margin: 0; font-size: 13px; color: #2d3a5e; }
+    .steps li strong { color: #1a1a2e; }
+
+    /* ── Code inline ── */
+    code {
+      background: #eef0fb;
+      border: 1px solid #d8daf0;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: "Cascadia Code", "Fira Code", "Consolas", monospace;
+      font-size: 12.5px;
+      color: #2d6a9f;
+    }
+
+    /* ── Code block ── */
+    pre {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: "Cascadia Code", "Fira Code", "Consolas", monospace;
+      font-size: 12.5px;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
+
+    /* ── Callout ── */
+    .callout {
+      border-left: 4px solid #2d6a9f;
+      background: #edf3fb;
+      border-radius: 0 8px 8px 0;
+      padding: 12px 18px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: #2d3a5e;
+    }
+    .callout.tip  { border-color: #2e7d52; background: #edfaf3; }
+    .callout.warn { border-color: #b06000; background: #fef6e4; }
+    .callout strong { font-weight: 700; }
+
+    /* ── Divider ── */
+    hr { border: none; border-top: 1px solid #e8eaf2; margin: 32px 0; }
+
+    /* ── Responsive ── */
+    @media (max-width: 720px) {
+      .layout { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: static; }
+      .content { padding: 28px 20px 60px; }
+      .hero { flex-direction: column; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ═══════════════════════════════ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>TaskFlow</h1>
+      <p>User Guide</p>
+    </div>
+    <nav>
+      <div class="nav-section">Getting Started</div>
+      <a href="#overview">Overview</a>
+      <a href="#running">Running the App</a>
+
+      <div class="nav-section">GUI Guide</div>
+      <a href="#toolbar">Toolbar</a>
+      <a href="#adding-tasks">Adding Tasks</a>
+      <a href="#completing">Completing Tasks</a>
+      <a href="#search-filter">Search &amp; Filter</a>
+      <a href="#history">History Tab</a>
+      <a href="#statistics">Statistics</a>
+      <a href="#saving">Saving &amp; Loading</a>
+
+      <div class="nav-section">CLI Guide</div>
+      <a href="#cli">Using the CLI</a>
+
+      <div class="nav-section">Reference</div>
+      <a href="#priorities">Priority Levels</a>
+      <a href="#task-types">Task Types</a>
+      <a href="#shortcuts">Keyboard Shortcuts</a>
+      <a href="#faq">FAQ</a>
+      <a href="#testing">Running Tests</a>
+    </nav>
+  </aside>
+
+  <!-- ═══════════════════════════════ CONTENT ══ -->
+  <main class="content">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-text">
+        <h1>TaskFlow</h1>
+        <p>A priority-based task scheduler with a graphical interface and a command-line interface.<br>
+        Runs on Windows, macOS, and Linux — no installation required.</p>
+      </div>
+      <div class="hero-badge">
+        <strong>v1.0</strong>
+        Python 3.6+<br>stdlib only
+      </div>
+    </div>
+
+    <!-- ══ Overview ══ -->
+    <section id="overview">
+      <h2><span class="icon">📋</span>Overview</h2>
+      <p>
+        TaskFlow lets you manage tasks at three priority levels — High, Medium, and Low.
+        The built-in priority queue always surfaces your most urgent work first.
+        You can also create <strong>recurring tasks</strong> that automatically reschedule
+        themselves after being completed.
+      </p>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <h4>Priority Queue</h4>
+          <p>High-priority tasks always appear at the top, powered by a Min-Heap.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔁</div>
+          <h4>Recurring Tasks</h4>
+          <p>Set a repeat interval (days) and the next occurrence is added automatically.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔍</div>
+          <h4>Search &amp; Filter</h4>
+          <p>Find tasks instantly by keyword or narrow the list by priority level.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">💾</div>
+          <h4>Auto-persistence</h4>
+          <p>Tasks are saved to <code>tasks.json</code> and reloaded on the next run.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ Running ══ -->
+    <section id="running">
+      <h2><span class="icon">▶️</span>Running the App</h2>
+
+      <h3>Graphical Interface (recommended)</h3>
+      <pre>python gui.py</pre>
+      <p>Opens the full tkinter window with toolbar, task list, and search bar.</p>
+
+      <h3>Command-Line Interface</h3>
+      <pre>python main.py</pre>
+      <p>Text-based menu driven interface. Both share the same <code>tasks.json</code> save file.</p>
+
+      <div class="callout tip">
+        <strong>Tip:</strong> Both interfaces read and write the same <code>tasks.json</code> file,
+        so you can switch between GUI and CLI freely.
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- ══ Toolbar ══ -->
+    <section id="toolbar">
+      <h2><span class="icon">🔧</span>Toolbar</h2>
+      <p>The toolbar is split into two rows to keep all controls visible at any window size.</p>
+
+      <h3>Row 1 — Actions</h3>
+      <ul class="feature-list">
+        <li><span class="fi">＋</span><div><strong>Add Task</strong> — Opens a dialog to create a one-time task. (<kbd>Ctrl+N</kbd>)</div></li>
+        <li><span class="fi">↻</span><div><strong>Add Recurring</strong> — Opens a dialog to create a task that repeats every N days. (<kbd>Ctrl+R</kbd>)</div></li>
+        <li><span class="fi">✓</span><div><strong>Complete</strong> — Marks the selected pending task as done. Recurring tasks are automatically rescheduled.</div></li>
+        <li><span class="fi">✏</span><div><strong>Edit</strong> — Opens a pre-filled dialog to edit the selected pending task. (<kbd>Ctrl+E</kbd>)</div></li>
+        <li><span class="fi">🗑</span><div><strong>Delete</strong> — Permanently removes the selected pending task after confirmation. (<kbd>Ctrl+D</kbd>)</div></li>
+        <li><span class="fi">📊</span><div><strong>Stats</strong> — Shows a summary of pending and completed task counts by priority.</div></li>
+        <li><span class="fi">💾</span><div><strong>Save</strong> — Manually saves the current state to <code>tasks.json</code> and shows a confirmation popup. (<kbd>Ctrl+S</kbd>)</div></li>
+        <li><span class="fi">❓</span><div><strong>Help</strong> — Opens this user guide in your browser.</div></li>
+      </ul>
+
+      <h3>Row 2 — Search &amp; Filter</h3>
+      <ul class="feature-list">
+        <li><span class="fi">🔍</span><div><strong>Search bar</strong> — Live keyword filter; the list updates on every keystroke. Click × to clear.</div></li>
+        <li><span class="fi">⬇</span><div><strong>Priority dropdown</strong> — Filter the list to show only High, Medium, or Low priority tasks.</div></li>
+      </ul>
+    </section>
+
+    <!-- ══ Adding Tasks ══ -->
+    <section id="adding-tasks">
+      <h2><span class="icon">＋</span>Adding Tasks</h2>
+
+      <h3>One-time task</h3>
+      <ol class="steps">
+        <li><p>Click <strong>＋ Add Task</strong> in the toolbar.</p></li>
+        <li><p>Enter a <strong>Title</strong> (required) and an optional <strong>Description</strong>.</p></li>
+        <li><p>Choose a <strong>Priority</strong>: High, Medium, or Low.</p></li>
+        <li><p>Optionally enter a <strong>Due date</strong> in <code>YYYY-MM-DD</code> format.</p></li>
+        <li><p>Click <strong>Add</strong> (or press <kbd>Enter</kbd>) to confirm.</p></li>
+      </ol>
+
+      <h3>Recurring task</h3>
+      <ol class="steps">
+        <li><p>Click <strong>↻ Add Recurring</strong> in the toolbar.</p></li>
+        <li><p>Fill in Title, Description, and Priority as above.</p></li>
+        <li><p>Set <strong>Repeat every (days)</strong> — the interval between occurrences, e.g. <code>7</code> for weekly.</p></li>
+        <li><p>Click <strong>Add</strong> to confirm. After you complete this task, the next occurrence is queued automatically.</p></li>
+      </ol>
+
+      <div class="callout">
+        <strong>Note:</strong> The Title field is required. All other fields are optional —
+        description defaults to <em>"(no description)"</em> and priority defaults to Medium.
+      </div>
+    </section>
+
+    <!-- ══ Completing ══ -->
+    <section id="completing">
+      <h2><span class="icon">✓</span>Completing Tasks</h2>
+      <p>To mark a pending task as complete:</p>
+      <ul class="feature-list">
+        <li><span class="fi">✓</span><div>Select a row and click <strong>✓ Complete</strong> in the toolbar.</div></li>
+      </ul>
+      <div class="callout tip">
+        <strong>Tip:</strong> Double-clicking a row opens the <strong>Edit</strong> dialog, not the Complete action.
+        Use the ✓ Complete button in the toolbar to mark a task as done.
+      </div>
+      <p>
+        Both methods show a confirmation dialog. After confirming:
+      </p>
+      <ul class="feature-list">
+        <li><span class="fi">📁</span><div><strong>One-time task:</strong> Moved to the Completed tab.</div></li>
+        <li><span class="fi">🔁</span><div><strong>Recurring task:</strong> Moved to Completed <em>and</em> a new occurrence is added to Pending with its due date set N days from today.</div></li>
+      </ul>
+    </section>
+
+    <!-- ══ Search & Filter ══ -->
+    <section id="search-filter">
+      <h2><span class="icon">🔍</span>Search &amp; Filter</h2>
+
+      <h3>Keyword search</h3>
+      <p>
+        Type in the <strong>Search</strong> box in the toolbar. The pending task list updates
+        instantly as you type. The search is case-insensitive and matches against both
+        the <em>title</em> and the <em>description</em>.
+      </p>
+      <p>Clear the search box to show all pending tasks again.</p>
+
+      <h3>Priority filter</h3>
+      <p>
+        Use the <strong>Priority</strong> dropdown next to the search box.
+        Select <em>High</em>, <em>Medium</em>, or <em>Low</em> to show only tasks
+        at that level. Select <em>All</em> to remove the filter.
+      </p>
+
+      <div class="callout tip">
+        <strong>Tip:</strong> Search and priority filter work together — you can search for
+        "meeting" while filtering on "High" to see only high-priority meeting tasks.
+      </div>
+    </section>
+
+    <!-- ══ History ══ -->
+    <section id="history">
+      <h2><span class="icon">📂</span>History Tab</h2>
+      <p>
+        Click the <strong>Completed</strong> tab (next to Pending Tasks) to view all
+        tasks that have been marked as done. The most recently completed task appears
+        at the top.
+      </p>
+      <p>
+        Completed tasks are read-only — they cannot be re-opened or deleted from the GUI.
+        The history is preserved across sessions.
+      </p>
+    </section>
+
+    <!-- ══ Statistics ══ -->
+    <section id="statistics">
+      <h2><span class="icon">📊</span>Statistics</h2>
+      <p>
+        Click <strong>📊 Stats</strong> in the toolbar to open a summary dialog showing:
+      </p>
+      <ul class="feature-list">
+        <li><span class="fi">📋</span><div>Total number of <strong>pending</strong> tasks</div></li>
+        <li><span class="fi">✅</span><div>Total number of <strong>completed</strong> tasks</div></li>
+        <li><span class="fi">🔴</span><div>Pending tasks broken down by <strong>High / Medium / Low</strong> priority</div></li>
+      </ul>
+    </section>
+
+    <!-- ══ Saving ══ -->
+    <section id="saving">
+      <h2><span class="icon">💾</span>Saving &amp; Loading</h2>
+      <p>
+        Tasks are saved to <code>tasks.json</code> in the same folder as the scripts.
+        The file is created automatically the first time you save.
+      </p>
+      <ul class="feature-list">
+        <li><span class="fi">🚪</span><div><strong>On exit:</strong> A dialog asks whether to save before closing. If you choose Yes, tasks are saved silently without an extra popup.</div></li>
+        <li><span class="fi">💾</span><div><strong>Manual save:</strong> Click <strong>💾 Save</strong> in the toolbar (or press <kbd>Ctrl+S</kbd>). A “Tasks saved successfully” confirmation popup appears.</div></li>
+        <li><span class="fi">📂</span><div><strong>On startup:</strong> Tasks from the previous session are loaded automatically.</div></li>
+      </ul>
+      <div class="callout warn">
+        <strong>Warning:</strong> If you close the window and choose <em>No</em> in the save
+        dialog, any unsaved changes since the last save will be lost.
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- ══ CLI ══ -->
+    <section id="cli">
+      <h2><span class="icon">💻</span>Using the CLI</h2>
+      <p>Run <code>python main.py</code> to start the text menu. The following options are available:</p>
+
+      <table class="kbd-table">
+        <thead><tr><th>Key</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>1</kbd></td><td>Add a one-time task</td></tr>
+          <tr><td><kbd>2</kbd></td><td>Add a recurring task</td></tr>
+          <tr><td><kbd>3</kbd></td><td>View all pending tasks (sorted by priority)</td></tr>
+          <tr><td><kbd>4</kbd></td><td>Complete a task (enter its ID)</td></tr>
+          <tr><td><kbd>5</kbd></td><td>Show the single highest-priority task</td></tr>
+          <tr><td><kbd>6</kbd></td><td>Search tasks by keyword</td></tr>
+          <tr><td><kbd>7</kbd></td><td>Filter tasks by priority level</td></tr>
+          <tr><td><kbd>8</kbd></td><td>View completed task history</td></tr>
+          <tr><td><kbd>9</kbd></td><td>Show statistics</td></tr>
+          <tr><td><kbd>0</kbd></td><td>Save and exit</td></tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top:14px;">Priority is entered as <kbd>H</kbd>, <kbd>M</kbd>, or <kbd>L</kbd> (case-insensitive). Numbers <kbd>1</kbd>&nbsp;/&nbsp;<kbd>2</kbd>&nbsp;/&nbsp;<kbd>3</kbd> also work.</p>
+    </section>
+
+    <hr>
+
+    <!-- ══ Priority Levels ══ -->
+    <section id="priorities">
+      <h2><span class="icon">🎯</span>Priority Levels</h2>
+      <p>Every task has one of three priority levels. The queue always presents higher-priority tasks first.</p>
+
+      <table class="kbd-table">
+        <thead><tr><th>Level</th><th>Row colour</th><th>When to use</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="pri pri-high">High</span></td>
+            <td>Light red</td>
+            <td>Urgent — deadlines, blockers, critical items</td>
+          </tr>
+          <tr>
+            <td><span class="pri pri-medium">Medium</span></td>
+            <td>Light yellow</td>
+            <td>Important but not immediately urgent</td>
+          </tr>
+          <tr>
+            <td><span class="pri pri-low">Low</span></td>
+            <td>Light green</td>
+            <td>Nice-to-have, background tasks</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ══ Task Types ══ -->
+    <section id="task-types">
+      <h2><span class="icon">📝</span>Task Types</h2>
+
+      <h3>Task (one-time)</h3>
+      <p>
+        A standard task. Once completed it moves to history and does not reappear.
+        Use this for anything that only needs to happen once.
+      </p>
+
+      <h3>Recurring Task</h3>
+      <p>
+        A task with a repeat interval in days. When completed:
+      </p>
+      <ol class="steps">
+        <li><p>The completed instance is moved to history.</p></li>
+        <li><p>A new instance is automatically created with the due date set to <em>today + interval</em>.</p></li>
+        <li><p>The new instance gets its own unique ID and appears immediately in the Pending list.</p></li>
+      </ol>
+      <p>Examples: weekly review (<code>7</code> days), daily standup (<code>1</code> day), monthly report (<code>30</code> days).</p>
+    </section>
+
+    <!-- ══ Keyboard Shortcuts ══ -->
+    <section id="shortcuts">
+      <h2><span class="icon">⌨️</span>Keyboard Shortcuts</h2>
+
+      <h3>Main window</h3>
+      <table class="kbd-table">
+        <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>Ctrl+N</kbd></td><td>Add a new one-time task</td></tr>
+          <tr><td><kbd>Ctrl+R</kbd></td><td>Add a new recurring task</td></tr>
+          <tr><td><kbd>Ctrl+E</kbd></td><td>Edit the selected pending task</td></tr>
+          <tr><td><kbd>Ctrl+D</kbd></td><td>Delete the selected pending task</td></tr>
+          <tr><td><kbd>Ctrl+S</kbd></td><td>Save tasks to <code>tasks.json</code></td></tr>
+          <tr><td><kbd>Double-click</kbd> row</td><td>Open the Edit dialog for the selected task</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Add Task / Edit / Add Recurring dialog</h3>
+      <table class="kbd-table" style="margin-top:10px;">
+        <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>Enter</kbd></td><td>Confirm and submit the dialog</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>Cancel and close the dialog</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ══ FAQ ══ -->
+    <section id="faq">
+      <h2><span class="icon">❓</span>FAQ</h2>
+
+      <h3>Where is my data stored?</h3>
+      <p>In <code>tasks.json</code> inside the same folder as <code>gui.py</code> / <code>main.py</code>. You can back it up, copy it, or delete it to start fresh.</p>
+
+      <h3>Can I edit a task after creating it?</h3>
+      <p>Yes &mdash; select the task in the Pending list and click <strong>✏ Edit</strong> in the toolbar (or press <kbd>Ctrl+E</kbd>). A pre-filled dialog lets you update the title, description, priority, and due date. Only pending tasks can be edited; completed tasks in the History tab are read-only.</p>
+
+      <h3>What happens if I delete tasks.json?</h3>
+      <p>TaskFlow will start with an empty task list on the next run. No error is shown — a missing file is treated as a first run.</p>
+
+      <h3>Can I run GUI and CLI at the same time?</h3>
+      <p>It is possible but not recommended. Both processes write to the same <code>tasks.json</code> and there is no file-locking, so changes from one will overwrite the other on the next save.</p>
+
+      <h3>The GUI window looks small. Can I resize it?</h3>
+      <p>Yes — the window is freely resizable. The minimum size is 640 × 420 px.</p>
+    </section>
+
+    <!-- ══ RUNNING TESTS ══ -->
+    <section id="testing">
+      <h2><span class="icon">🧪</span>Running Tests</h2>
+
+      <p>TaskFlow ships with an optional <strong>pytest</strong> test suite
+      (<code>tests.py</code>) that verifies the core business logic without
+      launching the GUI or the CLI. All tests are self-contained and leave no
+      files behind.</p>
+
+      <h3>Prerequisites</h3>
+      <p>Install <code>pytest</code> once (no other dependencies required):</p>
+      <pre>pip install pytest</pre>
+
+      <h3>Running the full suite</h3>
+      <p>From the project folder:</p>
+      <pre>pytest tests.py -v</pre>
+      <p>You should see <strong>39 tests</strong> collected and all marked
+      <code>PASSED</code>. Expected output:</p>
+      <pre>======= test session starts =======
+...
+39 passed in 0.10s</pre>
+
+      <h3>What is tested</h3>
+      <table>
+        <thead>
+          <tr><th>Module / Class</th><th>Tests</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>TestPriority</td><td>Enum ordering, string representation</td></tr>
+          <tr><td>TestTask</td><td>ID auto-increment, completion, property setters, operator overloading, dict round-trip</td></tr>
+          <tr><td>TestRecurringTask</td><td>Rescheduling after complete(), future due-date, serialisation round-trip</td></tr>
+          <tr><td>TestLinkedList</td><td>prepend / append ordering, size tracking, lazy iteration</td></tr>
+          <tr><td>TestMinHeap</td><td>Priority ordering on push/pop, peek, remove_by_id, heap invariant after removal</td></tr>
+          <tr><td>TestTaskScheduler</td><td>add, complete, delete, update, next-task, filter, search, stats</td></tr>
+          <tr><td>TestStorage</td><td>JSON round-trip, missing-file first-run, corrupt-file error</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Running a single test class</h3>
+      <pre>pytest tests.py::TestMinHeap -v</pre>
+
+      <h3>Stopping on first failure</h3>
+      <pre>pytest tests.py -x</pre>
+    </section>
+
+  </main>
+</div>
+</body>
+</html>

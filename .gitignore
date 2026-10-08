@@ -1,0 +1,37 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+
+# Testing & Cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment and sensitive files
+.env
+.env.*
+*.env
+
+# Storage and Data JSON files
+tasks.json
+storage.json
+*.json
+
+# OS & IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local reports & generated documents
+Project_Report.html
+*.pdf
+generate_pdf.py
+
